@@ -1,4 +1,7 @@
-import pg from "pg";
+import pkg from "pg";
+const { Pool } = pkg;
+
+import "dotenv/config";
 
 const options = { connectionString: process.env.DATABASE_URL };
 
@@ -7,5 +10,6 @@ if (process.env.NODE_ENV === "production") {
   options.ssl = { rejectUnauthorized: false };
 }
 
-const db = new pg.Client(options);
+const db = new Pool(options);
+
 export default db;
