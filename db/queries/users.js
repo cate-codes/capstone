@@ -51,3 +51,30 @@ export async function getUserByUsername(username) {
   } = await db.query(`SELECT * FROM users WHERE username = $1`, [username]);
   return user;
 }
+
+export async function updateEntryForUser(
+  id,
+  user_id,
+  { mood_id = null, song_id = null, journal_text = null } = {}
+) {
+  // Coerce any undefined that slipped through to null to satisfy pg
+  const p_mood_id = mood_id === undefined ? null : mood_id;
+  const p_song_id = song_id === undefined ? null : song_id;
+  const p_text = journal_text === undefined ? null : journal_text;
+
+  const {
+    rows: [entry],
+  } = await db.query(
+    `
+    UPDATE entries
+    SET
+      mood_id      = COALESCE($3, mood_id),
+      song_id      = $4,
+      journal_text = COALESCE($5, journal_text)
+    WHERE id = $1 AND user_id = $2
+    RETURNING *
+    `,
+    [id, user_id, p_mood_id, p_song_id, p_text]
+  );
+  return entry || null;
+}

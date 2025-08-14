@@ -9,9 +9,18 @@ import handlePostgresErrors from "#middleware/handlePostgresErrors";
 import cors from "cors";
 import morgan from "morgan";
 import moodsRouter from "#api/moods";
+import songsRouter from "#api/songs";
 
+// health check
+app.get("/health", (req, res) => {
+  res.json({ ok: true });
+});
+
+// CORS n logging
 app.use(cors({ origin: process.env.CORS_ORIGIN ?? /localhost/ }));
 app.use(morgan("dev"));
+
+// body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -32,3 +41,6 @@ app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).send("OOPS! Something went wrong.");
 });
+
+// spotify songs
+app.use("/api/songs", songsRouter);
