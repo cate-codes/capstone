@@ -1,45 +1,50 @@
-/**
- * ApiContext attaches the user's authentication token to API requests when possible.
- * It also handles tags to refresh appropriate queries after a mutation.
- */
-
-import { createContext, useContext, useState } from "react";
+import { createContext, useState, useCallback, useMemo } from "react";
 import { useAuth } from "../auth/AuthContext";
 
-export const API = import.meta.env.VITE_API_URL;
-
-const ApiContext = createContext();
+export const ApiContext = createContext(null);
+export const API = import.meta.env.VITE_API_URL || "";
 
 export function ApiProvider({ children }) {
   const { token } = useAuth();
-  const headers = { "Content-Type": "application/json" };
-  if (token) headers["Authorization"] = `Bearer ${token}`;
+  const BASE = API;
 
-  const request = async (resource, options) => {
-    const response = await fetch(API + resource, {
-      headers,
-      ...options,
-    });
-    const isJson = /json/.test(response.headers.get("Content-Type"));
-    const result = isJson ? await response.json() : await response.text();
-    if (!response.ok) throw Error(result);
-    return result;
-  };
+  const request = useCallback(
+    async (resource, options = {}) => {
+      const url = BASE ? `${BASE}${resource}` : resource;
+      const res = await fetch(url, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(options.headers || {}),
+        },
+      });
 
-  const [tags, setTags] = useState([]);
-  const provideTag = (tag, query) => {
-    setTags({ ...tags, [tag]: query });
-  };
-  const invalidateTags = (tagsToInvalidate) => {
-    tagsToInvalidate.forEach((tag) => tags[tag]?.());
-  };
+      const ct = res.headers.get("Content-Type") || "";
+      const body = /json/i.test(ct) ? await res.json() : await res.text();
+      if (!res.ok)
+        throw new Error(typeof body === "string" ? body : JSON.stringify(body));
+      return body;
+    },
+    [BASE, token]
+  );
 
-  const value = { request, provideTag, invalidateTags };
+  // --- tag-based invalidation ---
+  const [tags, setTags] = useState({});
+  const provideTag = useCallback((tag, refetchFn) => {
+    setTags((prev) => ({ ...prev, [tag]: refetchFn }));
+  }, []);
+  const invalidateTags = useCallback(
+    (toInvalidate) => {
+      toInvalidate.forEach((t) => tags[t]?.());
+    },
+    [tags]
+  );
+
+  const value = useMemo(
+    () => ({ request, provideTag, invalidateTags }),
+    [request, provideTag, invalidateTags]
+  );
+
   return <ApiContext.Provider value={value}>{children}</ApiContext.Provider>;
-}
-
-export function useApi() {
-  const context = useContext(ApiContext);
-  if (!context) throw Error("useApi must be used within a ApiProvider");
-  return context;
 }

@@ -1,42 +1,78 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
-
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
-/** A form that allows users to log into an existing account. */
 export default function Login() {
   const { login } = useAuth();
-  const navigate = useNavigate();
+  const nav = useNavigate();
+  const loc = useLocation();
+  const from = loc.state?.from?.pathname || "/";
 
-  const [error, setError] = useState(null);
+  const [id, setId] = useState(""); // email OR username
+  const [password, setPassword] = useState("");
+  const [err, setErr] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const onLogin = async (formData) => {
-    const username = formData.get("username");
-    const password = formData.get("password");
+  async function onSubmit(e) {
+    e.preventDefault();
+    setErr(null);
+    setLoading(true);
     try {
-      await login({ username, password });
-      navigate("/");
+      await login({
+        email: id.includes("@") ? id : undefined,
+        username: !id.includes("@") ? id : undefined,
+        password,
+      });
+      nav(from, { replace: true });
     } catch (e) {
-      setError(e.message);
+      const msg = String(e?.message || e || "Login failed");
+      // strip any HTML that may have come back from server
+      setErr(msg.replace(/<[^>]+>/g, ""));
+    } finally {
+      setLoading(false);
     }
-  };
+  }
 
   return (
-    <>
-      <h1>Log in to your account</h1>
-      <form action={onLogin}>
-        <label>
-          Username
-          <input type="username" name="username" required />
-        </label>
-        <label>
-          Password
-          <input type="password" name="password" required />
-        </label>
-        <button>Login</button>
-        {error && <output>{error}</output>}
-      </form>
-      <Link to="/register">Need an account? Register here.</Link>
-    </>
+    <div className="auth-shell">
+      <div className="card">
+        <h1>Log in to your account</h1>
+
+        {err && <div className="alert">{err}</div>}
+
+        <form onSubmit={onSubmit} className="form">
+          <label>
+            <span>Username or Email</span>
+            <input
+              className="input"
+              value={id}
+              onChange={(e) => setId(e.target.value)}
+              autoComplete="username email"
+              required
+            />
+          </label>
+
+          <label>
+            <span>Password</span>
+            <input
+              className="input"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+              required
+            />
+          </label>
+
+          <button className="btn btn-primary" disabled={loading}>
+            {loading ? "Signing in…" : "Log in"}
+          </button>
+        </form>
+
+        <p className="muted">
+          Need an account? <Link to="/register">Register here</Link>.
+        </p>
+      </div>
+    </div>
   );
 }

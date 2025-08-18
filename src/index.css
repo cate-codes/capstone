@@ -1,0 +1,811 @@
+/* ===== MoodTune Theme (Coolors palette) ===== */
+:root {
+  /* Raw palette */
+  --oxford-blue: #0a122a; /* deep navy */
+  --pistachio: #90bb63; /* fresh green */
+  --seasalt: #fbfaf8; /* near-white */
+  --bone: #e4dac8; /* warm border */
+  --old-rose: #ad7671; /* muted rose */
+
+  /* App tokens */
+  --c1: var(--pistachio); /* Brand / Primary */
+  --c2: var(--oxford-blue); /* App background */
+  --c3: var(--seasalt); /* Card/background for surfaces */
+  --c4: var(--old-rose); /* Accent / highlights */
+  --c5: var(--bone); /* Borders / subtle lines */
+
+  /* Semantic map used across the UI */
+  --brand: var(--c1);
+  --bg: var(--c2);
+  --card: var(--c3);
+  --accent: var(--c4);
+  --border: var(--c5);
+
+  /* Text on dark app background */
+  --text: #ffffff;
+  --muted: rgba(255, 255, 255, 0.75);
+
+  /* Text on light card surfaces */
+  --text-card: #111111;
+  --muted-card: rgba(17, 17, 17, 0.65);
+}
+
+/* ===== Base ===== */
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  color: var(--text);
+  background: var(--bg);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji;
+}
+a {
+  color: inherit;
+}
+
+/* ===== Layout ===== */
+.app-shell {
+  min-height: 100%;
+}
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.stack {
+  display: grid;
+  gap: 12px;
+}
+.page-title {
+  font-size: 28px;
+  margin: 6px 0 12px;
+}
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  color: var(--text-card); /* ensure dark text on light card */
+}
+.card-title {
+  font-size: 18px;
+  margin: 0 0 6px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 820px) {
+  .grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ===== Navbar ===== */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-card);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+}
+.brand {
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--text-card);
+  font-size: 18px;
+}
+.nav {
+  display: flex;
+  gap: 6px;
+}
+.nav-link {
+  text-decoration: none;
+  color: var(--muted-card);
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+.nav-link:hover {
+  color: var(--text-card);
+  background: color-mix(in oklab, var(--card) 85%, var(--border));
+}
+.nav-link.active {
+  background: var(--brand);
+  color: #fff;
+}
+.nav-actions .btn {
+  margin-left: 8px;
+}
+/* Scalloped bottom for the navbar */
+:root {
+  /* tweak size here (height & diameter of each scallop) */
+  --scallop-size: 22px;
+}
+
+.navbar.scalloped {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--card);
+  border-bottom: none; /* remove the straight line */
+}
+
+/* draw a row of semi-circles that "cut" the bottom edge */
+.navbar.scalloped::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(-1 * var(--scallop-size) / 2);
+  height: var(--scallop-size);
+  background: var(--card); /* same as navbar surface */
+  pointer-events: none;
+  z-index: 1;
+
+  /* mask defines the scallop shape; include -webkit- for Safari */
+  -webkit-mask: radial-gradient(
+      calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+        calc(var(--scallop-size) / 2),
+      #000 98%,
+      #0000
+    )
+    0 0 / var(--scallop-size) var(--scallop-size) repeat-x;
+  mask: radial-gradient(
+      calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+        calc(var(--scallop-size) / 2),
+      #000 98%,
+      #0000
+    )
+    0 0 / var(--scallop-size) var(--scallop-size) repeat-x;
+}
+/* give a little spacing so content doesn't collide with scallops */
+.navbar + main,
+.navbar + .container {
+  margin-top: 6px;
+}
+
+/* ===== Buttons ===== */
+.btn {
+  border: 1px solid var(--border);
+  background: var(--card);
+  padding: 8px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text-card);
+  display: inline-block;
+}
+.btn:hover {
+  background: color-mix(in oklab, var(--card) 92%, var(--border));
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+.btn-primary:hover {
+  filter: brightness(0.97);
+}
+.btn-light {
+  background: var(--card);
+}
+
+/* ===== Entries list ===== */
+.entry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+.entry-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--card);
+  color: var(--text-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  text-decoration: none;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.entry-card:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+.entry-emoji {
+  font-size: 28px;
+}
+.entry-title {
+  font-weight: 600;
+}
+.entry-sub {
+  color: var(--muted-card);
+  font-size: 13px;
+}
+
+.mood-preview {
+  display: flex;
+  justify-content: center;
+}
+@keyframes bump {
+  0% {
+    transform: scale(0.8);
+    filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0));
+  }
+  50% {
+    transform: scale(1.2);
+    filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.18));
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.mood-bounce {
+  display: inline-block;
+  animation: bump 320ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* ===== Forms (auth/pages) ===== */
+.auth-shell {
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.auth-shell .card {
+  max-width: 420px;
+  width: 100%;
+}
+.form {
+  display: grid;
+  gap: 14px;
+}
+label span {
+  display: block;
+  font-size: 13px;
+  color: var(--muted-card);
+  margin-bottom: 6px;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: var(--card);
+  color: var(--text-card);
+}
+.input::placeholder {
+  color: color-mix(in oklab, var(--text-card) 55%, white);
+}
+.input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand) 25%, transparent);
+}
+.muted {
+  color: var(--muted-card);
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+/* ===== Alerts ===== */
+.alert {
+  background: color-mix(in oklab, #ffdddd 85%, var(--card));
+  border: 1px solid #fbb;
+  color: #a00;
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+/* ===== Skeleton ===== */
+.skel {
+  border-radius: 10px;
+  background: linear-gradient(90deg, #eee 25%, #f6f6f6 37%, #eee 63%);
+  background-size: 400% 100%;
+  animation: skel 1.2s ease infinite;
+}
+@keyframes skel {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+/* ===== Songs UI ===== */
+.song-card {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 14px;
+  padding: 12px;
+  color: var(--text-card);
+}
+.song-card img {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+.song-meta {
+  display: grid;
+  gap: 4px;
+}
+.song-title {
+  font-weight: 600;
+}
+.song-sub {
+  color: var(--muted-card);
+  font-size: 13px;
+}
+.song-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.song-actions audio {
+  height: 32px;
+}
+
+.song-results {
+  display: grid;
+  gap: 8px;
+}
+.song-result {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 12px;
+  padding: 8px;
+  cursor: pointer;
+  color: var(--text-card);
+}
+.song-result:hover {
+  background: color-mix(in oklab, var(--card) 92%, var(--border));
+}
+.song-result img {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* ===== Optional helpers ===== */
+.bg-brand {
+  background: var(--brand);
+  color: #fff;
+}
+.text-brand {
+  color: var(--brand);
+}
+.badge-accent {
+  background: color-mix(in oklab, var(--accent) 18%, white);
+  color: var(--text-card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+/* ==== 4-side scallops for boxes ==== */
+/* one place to size the bumps */
+:root {
+  --scallop-size: 22px;
+}
+
+/* apply to all your “boxes” */
+.card,
+.entry-card,
+.song-card,
+.song-result,
+.alert {
+  position: relative;
+  overflow: visible; /* let scallops hang outside */
+}
+
+/* TOP + BOTTOM strip */
+.card::before,
+.entry-card::before,
+.song-card::before,
+.song-result::before,
+.alert::before {
+  content: "";
+  position: absolute;
+  left: -1px; /* extend over the border */
+  right: -1px;
+  top: calc(-0.5 * var(--scallop-size));
+  bottom: calc(-0.5 * var(--scallop-size));
+  background: inherit; /* same color as the box */
+  pointer-events: none;
+  z-index: 1;
+
+  /* two horizontal rows of half-circles (top & bottom) */
+  -webkit-mask: radial-gradient(
+        calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+          calc(var(--scallop-size) / 2),
+        #000 98%,
+        #0000
+      )
+      top left / var(--scallop-size) var(--scallop-size) repeat-x,
+    radial-gradient(
+        calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+          calc(var(--scallop-size) / 2),
+        #000 98%,
+        #0000
+      )
+      bottom left / var(--scallop-size) var(--scallop-size) repeat-x;
+  mask: radial-gradient(
+        calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+          calc(var(--scallop-size) / 2),
+        #000 98%,
+        #0000
+      )
+      top left / var(--scallop-size) var(--scallop-size) repeat-x,
+    radial-gradient(
+        calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+          calc(var(--scallop-size) / 2),
+        #000 98%,
+        #0000
+      )
+      bottom left / var(--scallop-size) var(--scallop-size) repeat-x;
+}
+
+/* LEFT + RIGHT strip */
+.card::after,
+.entry-card::after,
+.song-card::after,
+.song-result::after,
+.alert::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: calc(-0.5 * var(--scallop-size));
+  right: calc(-0.5 * var(--scallop-size));
+  background: inherit;
+  pointer-events: none;
+  z-index: 1;
+
+  /* two vertical columns of half-circles (left & right) */
+  -webkit-mask: radial-gradient(
+        calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+          calc(var(--scallop-size) / 2),
+        #000 98%,
+        #0000
+      )
+      left top / var(--scallop-size) var(--scallop-size) repeat-y,
+    radial-gradient(
+        calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+          calc(var(--scallop-size) / 2),
+        #000 98%,
+        #0000
+      )
+      right top / var(--scallop-size) var(--scallop-size) repeat-y;
+  mask: radial-gradient(
+        calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+          calc(var(--scallop-size) / 2),
+        #000 98%,
+        #0000
+      )
+      left top / var(--scallop-size) var(--scallop-size) repeat-y,
+    radial-gradient(
+        calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+          calc(var(--scallop-size) / 2),
+        #000 98%,
+        #0000
+      )
+      right top / var(--scallop-size) var(--scallop-size) repeat-y;
+}
+
+/* breathing room so scallops don’t collide with neighbors */
+.card,
+.entry-card,
+.song-card,
+.song-result,
+.alert {
+  margin: calc(var(--scallop-size) / 2);
+}
+
+/* ===== Lift & expand on hover (entries, cards, songs) ===== */
+@media (hover: hover) and (pointer: fine) {
+  .entry-card,
+  .song-result,
+  .song-card,
+  .card {
+    /* tweak per component by overriding these on the element */
+    --lift-scale: 1.035;
+    --lift-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+    --lift-speed: 160ms;
+
+    transition: transform var(--lift-speed) cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow var(--lift-speed) cubic-bezier(0.2, 0.7, 0.2, 1);
+    will-change: transform;
+    transform-origin: center;
+  }
+
+  .entry-card:hover,
+  .entry-card:focus-visible,
+  .song-result:hover,
+  .song-result:focus-visible,
+  .song-card:hover,
+  .song-card:focus-visible,
+  .card:hover,
+  .card:focus-within {
+    transform: scale(var(--lift-scale));
+    box-shadow: var(--lift-shadow);
+    z-index: 3; /* sit above neighbors when scaled */
+  }
+}
+
+.entry-card:hover {
+  transform: scale(1.04) rotate(0.25deg);
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .entry-card,
+  .song-result,
+  .song-card,
+  .card {
+    transition: none;
+  }
+  .entry-card:hover,
+  .song-result:hover,
+  .song-card:hover,
+  .card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* ===== Home hero ===== */
+.hero {
+  background: var(--card);
+  color: var(--text-card);
+  border-bottom: 1px solid var(--border);
+  /* optional faint gradient overlay using brand/accent */
+  background-image: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--brand) 6%, transparent),
+      transparent 42%
+    ),
+    linear-gradient(
+      0deg,
+      color-mix(in oklab, var(--accent) 6%, transparent),
+      transparent 62%
+    );
+}
+.hero .hero-body {
+  padding: 48px 16px;
+}
+@media (min-width: 820px) {
+  .hero .hero-body {
+    padding: 64px 16px;
+  }
+}
+.hero-title {
+  font-size: clamp(28px, 4vw, 44px);
+  margin: 0 0 8px;
+}
+.hero-sub {
+  font-size: clamp(15px, 1.8vw, 18px);
+  color: var(--muted-card);
+  max-width: 68ch;
+  margin: 0;
+}
+.hero-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+/* Scalloped bottom for hero */
+.hero.scalloped-4 {
+  position: relative;
+  overflow: visible;
+  border: none;
+}
+/* TOP + BOTTOM row of scallops */
+.hero.scalloped-4::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  top: calc(-0.5 * var(--scallop-size));
+  bottom: calc(-0.5 * var(--scallop-size));
+  background: inherit; /* keep gradients/textures continuous */
+  pointer-events: none;
+  z-index: 1;
+
+  /* two horizontal rows: top & bottom */
+  -webkit-mask: radial-gradient(
+        calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+          calc(var(--scallop-size) / 2),
+        #000 98%,
+        #0000
+      )
+      top left / var(--scallop-size) var(--scallop-size) repeat-x,
+    radial-gradient(
+        calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+          calc(var(--scallop-size) / 2),
+        #000 98%,
+        #0000
+      )
+      bottom left / var(--scallop-size) var(--scallop-size) repeat-x;
+  mask: radial-gradient(
+        calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+          calc(var(--scallop-size) / 2),
+        #000 98%,
+        #0000
+      )
+      top left / var(--scallop-size) var(--scallop-size) repeat-x,
+    radial-gradient(
+        calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+          calc(var(--scallop-size) / 2),
+        #000 98%,
+        #0000
+      )
+      bottom left / var(--scallop-size) var(--scallop-size) repeat-x;
+}
+
+/* LEFT + RIGHT column of scallops */
+.hero.scalloped-4::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: calc(-0.5 * var(--scallop-size));
+  right: calc(-0.5 * var(--scallop-size));
+  background: inherit;
+  pointer-events: none;
+  z-index: 1;
+
+  /* two vertical columns: left & right */
+  -webkit-mask: radial-gradient(
+        calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+          calc(var(--scallop-size) / 2),
+        #000 98%,
+        #0000
+      )
+      left top / var(--scallop-size) var(--scallop-size) repeat-y,
+    radial-gradient(
+        calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+          calc(var(--scallop-size) / 2),
+        #000 98%,
+        #0000
+      )
+      right top / var(--scallop-size) var(--scallop-size) repeat-y;
+  mask: radial-gradient(
+        calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+          calc(var(--scallop-size) / 2),
+        #000 98%,
+        #0000
+      )
+      left top / var(--scallop-size) var(--scallop-size) repeat-y,
+    radial-gradient(
+        calc(var(--scallop-size) / 2) at calc(var(--scallop-size) / 2)
+          calc(var(--scallop-size) / 2),
+        #000 98%,
+        #0000
+      )
+      right top / var(--scallop-size) var(--scallop-size) repeat-y;
+}
+
+.home .hero {
+  --scallop-size: 16px;
+  margin-bottom: 12px;
+}
+
+/* tighter padding */
+.home .hero .hero-body {
+  padding: 24px 16px;
+}
+@media (min-width: 820px) {
+  .home .hero .hero-body {
+    padding: 32px 16px;
+  }
+}
+
+.home .hero .hero-title {
+  font-size: clamp(22px, 3.2vw, 34px);
+}
+.home .hero .hero-sub {
+  font-size: clamp(14px, 1.6vw, 16px);
+}
+/* Center the Welcome hero content */
+.home .hero .hero-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.home .hero .hero-sub {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.home .hero .hero-actions {
+  justify-content: center;
+}
+
+/* === Old Rose navbar theme (local token override) === */
+.navbar {
+  /* Re-map tokens INSIDE the navbar only */
+  --card: var(--old-rose); /* surface color */
+  --text-card: #fff; /* text on rose */
+  --muted-card: rgba(255, 255, 255, 0.85);
+  --border: color-mix(in oklab, var(--old-rose) 85%, #000 15%);
+
+  background: var(--card) !important; /* beat earlier "light" rule */
+  color: var(--text-card) !important;
+  border-bottom: none;
+}
+
+/* Brand + links pick up the new tokens */
+.navbar .brand {
+  color: var(--text-card);
+}
+
+.navbar .nav-link {
+  color: var(--muted-card);
+}
+.navbar .nav-link:hover {
+  color: var(--text-card);
+  background: rgba(255, 255, 255, 0.12);
+}
+.navbar .nav-link.active {
+  background: #fff;
+  color: var(--old-rose);
+}
+
+/* Logout button on rose */
+.navbar .btn,
+.navbar .btn.btn-light {
+  background: #fff;
+  color: var(--old-rose);
+  border-color: #fff;
+}
+
+/* Keep the scallops rose as well */
+.navbar.scalloped::after {
+  background: var(--card) !important; /* now equals Old Rose */
+}
