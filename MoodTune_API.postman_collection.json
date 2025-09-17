@@ -1,0 +1,291 @@
+{
+  "info": {
+    "name": "MoodTune API",
+    "_postman_id": "fc1f04fc-83fc-44d3-b9f4-522db8bc3ebf",
+    "description": "Postman collection for MoodTune backend. Login saves {{auth_token}} automatically; create entry saves {{entry_id}}.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Login (email)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/users/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "users",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"you@example.com\",\n  \"password\": \"yourPassword\"\n}"
+        }
+      },
+      "auth": {
+        "type": "noauth"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "let data = {};",
+              "try { data = pm.response.json(); } catch(e) {}",
+              "const token = data?.token ?? data?.data?.token ?? data?.access_token;",
+              "if (token) {",
+              "  pm.environment.set(\"auth_token\", token);",
+              "  console.log(\"Token saved to environment\");",
+              "} else {",
+              "  console.log(\"No token found in response\");",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Login (username)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/users/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "users",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"foo\",\n  \"password\": \"bar\"\n}"
+        }
+      },
+      "auth": {
+        "type": "noauth"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "let data = {};",
+              "try { data = pm.response.json(); } catch(e) {}",
+              "const token = data?.token ?? data?.data?.token ?? data?.access_token;",
+              "if (token) {",
+              "  pm.environment.set(\"auth_token\", token);",
+              "  console.log(\"Token saved to environment\");",
+              "} else {",
+              "  console.log(\"No token found in response\");",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/users/register",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "users",
+            "register"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"you@example.com\",\n  \"password\": \"yourPassword\",\n  \"name\": \"Cate\"\n}"
+        }
+      },
+      "auth": {
+        "type": "noauth"
+      }
+    },
+    {
+      "name": "Get Moods (public)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/moods",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "moods"
+          ]
+        }
+      },
+      "auth": {
+        "type": "noauth"
+      }
+    },
+    {
+      "name": "Get Entries",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/entries",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "entries"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create Entry",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/entries",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "entries"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mood_id\": 1,\n  \"journal_text\": \"First entry via Postman!\",\n  \"date\": \"2025-09-16\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "let json = {};",
+              "try { json = pm.response.json(); } catch(e) {}",
+              "const id = json?.id ?? json?.data?.id;",
+              "if (id) {",
+              "  pm.environment.set(\"entry_id\", String(id));",
+              "  console.log(\"entry_id saved to environment:\", id);",
+              "} else {",
+              "  console.log(\"No id found in response\");",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update Entry (by id)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/entries/{{entry_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "entries",
+            "{{entry_id}}"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"journal_text\": \"Updated via Postman\",\n  \"mood_id\": 2\n}"
+        }
+      }
+    },
+    {
+      "name": "Update Entry Song",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/entries/{{entry_id}}/song",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "entries",
+            "{{entry_id}}",
+            "song"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"song_spotify_id\": \"3n3Ppam7vgaV1aRUC9Lp\",\n  \"song_title\": \"Mr. Brightside\",\n  \"song_artist\": \"The Killers\",\n  \"song_album\": \"Hot Fuss\",\n  \"preview_url\": null,\n  \"uri\": \"spotify:track:3n3Ppam7vgaV1aRUC9Lp\",\n  \"image_url\": null\n}"
+        }
+      }
+    },
+    {
+      "name": "Delete Entry (by id)",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{base_url}}/entries/{{entry_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "entries",
+            "{{entry_id}}"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,277 @@
+{
+  "info": {
+    "name": "MoodTune Backend",
+    "_postman_id": "21b78a48-3de8-4b9b-8628-c8928061c758",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "entryId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "GET /api/moods (public)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/moods",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "moods"
+          ]
+        }
+      }
+    },
+    {
+      "name": "POST /users/login (get token)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let token = null;",
+              "try {",
+              "  const json = pm.response.json();",
+              "  if (typeof json === 'string') token = json;",
+              "  else if (json && json.token) token = json.token;",
+              "} catch (e) {",
+              "  token = pm.response.text();",
+              "}",
+              "if (token) {",
+              "  pm.collectionVariables.set('token', String(token).replace(/\"/g,'').trim());",
+              "  pm.test('Saved token to collection variables', function () {",
+              "    pm.expect(pm.collectionVariables.get('token')).to.be.a('string');",
+              "  });",
+              "} else {",
+              "  pm.test('Token not found in response', function () {",
+              "    pm.expect.fail('No token found in response body');",
+              "  });",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"foo\",\n  \"password\": \"bar\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/users/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "login"
+          ]
+        }
+      }
+    },
+    {
+      "name": "POST /api/entries (create)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const t = pm.collectionVariables.get('token');",
+              "if (t) { pm.request.headers.add({ key: 'Authorization', value: 'Bearer ' + t }); }"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "try {",
+              "  const json = pm.response.json();",
+              "  if (json && json.id) {",
+              "    pm.collectionVariables.set('entryId', json.id);",
+              "    pm.test('Saved entryId to collection variables', function(){",
+              "      pm.expect(pm.collectionVariables.get('entryId')).to.exist;",
+              "    });",
+              "  }",
+              "} catch (e) {}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mood_id\": 1,\n  \"journal_text\": \"Feeling good today!\",\n  \"song_id\": null\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/entries",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "entries"
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /api/entries (my entries)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const t = pm.collectionVariables.get('token');",
+              "if (t) pm.request.headers.add({ key: 'Authorization', value: 'Bearer ' + t });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/entries",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "entries"
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /api/entries/:id (one entry)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const t = pm.collectionVariables.get('token');",
+              "if (t) pm.request.headers.add({ key: 'Authorization', value: 'Bearer ' + t });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/entries/{{entryId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "entries",
+            "{{entryId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "PUT /api/entries/:id (update)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const t = pm.collectionVariables.get('token');",
+              "if (t) pm.request.headers.add({ key: 'Authorization', value: 'Bearer ' + t });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"journal_text\": \"Updated text!\",\n  \"mood_id\": 2\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/entries/{{entryId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "entries",
+            "{{entryId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "DELETE /api/entries/:id (delete)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const t = pm.collectionVariables.get('token');",
+              "if (t) pm.request.headers.add({ key: 'Authorization', value: 'Bearer ' + t });"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/entries/{{entryId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "entries",
+            "{{entryId}}"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,378 @@
+/* ========= Base ========= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+html {
+  color-scheme: light dark;
+}
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
+    "Noto Sans", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========= Theme ========= */
+:root {
+  --bg: #f8fafc; /* light background */
+  --panel: #ffffff; /* surfaces/cards */
+  --text: #111827; /* primary text */
+  --muted: #6b7280; /* secondary text */
+  --border: #e5e7eb; /* borders/dividers */
+  --brand: #6366f1; /* indigo */
+  --brand-contrast: #ffffff;
+  --accent: #10b981; /* green (optional) */
+  --danger: #ef4444;
+  --shadow: 0 6px 24px rgba(16, 24, 40, 0.08), 0 2px 4px rgba(16, 24, 40, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f172a; /* slate-900 */
+    --panel: #111827; /* gray-900 */
+    --text: #e5e7eb; /* gray-200 */
+    --muted: #9ca3af; /* gray-400 */
+    --border: #1f2937; /* gray-800 */
+    --brand: #818cf8; /* indigo-400 */
+    --brand-contrast: #0b1020;
+    --accent: #34d399;
+    --danger: #f87171;
+    --shadow: 0 6px 24px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* ========= Layout ========= */
+main {
+  padding: 1rem;
+}
+
+/* App bar / Navbar */
+.appbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+.appbar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  height: 56px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-decoration: none;
+  color: var(--text);
+}
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.navlink {
+  text-decoration: none;
+  color: var(--muted);
+  padding: 8px 10px;
+  border-radius: 8px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.navlink:hover {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--text);
+}
+.navlink.active {
+  background: var(--brand);
+  color: var(--brand-contrast);
+}
+
+/* ========= Cards / Containers ========= */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+/* Simple vertical stack spacing */
+.stack > * + * {
+  margin-top: 12px;
+}
+
+/* ========= Forms ========= */
+label > span {
+  display: inline-block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+input,
+textarea,
+select,
+.input,
+.mt-input {
+  width: 100%;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+textarea {
+  resize: vertical;
+}
+select {
+  appearance: none;
+}
+option {
+  color: var(--text);
+  background: var(--panel);
+}
+input:focus,
+textarea:focus,
+select:focus,
+.mt-input:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand) 28%, transparent);
+}
+
+/* ========= Buttons ========= */
+.btn,
+.mt-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.05s ease, background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+.btn:hover,
+.mt-btn:hover {
+  background: color-mix(in oklab, var(--panel) 90%, var(--brand) 10%);
+}
+.btn:active,
+.mt-btn:active {
+  transform: translateY(1px);
+}
+.btn[disabled],
+.mt-btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary,
+.mt-btn--primary {
+  background: var(--brand);
+  color: var(--brand-contrast);
+  border-color: color-mix(in oklab, var(--brand) 60%, black);
+}
+.btn-primary:hover,
+.mt-btn--primary:hover {
+  background: color-mix(in oklab, var(--brand) 88%, white);
+}
+.btn.ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+}
+.btn.ghost:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+@media (prefers-color-scheme: dark) {
+  .btn.ghost:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* ========= Alerts / Notes ========= */
+.alert {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklab, var(--danger) 40%, var(--border));
+  background: color-mix(in oklab, var(--danger) 8%, var(--panel));
+  color: color-mix(in oklab, var(--danger) 80%, var(--text));
+}
+.mt-note {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* ========= Mood preview fun ========= */
+.mood-preview {
+  text-align: center;
+  margin: 6px 0 2px;
+}
+.mood-bounce {
+  display: inline-block;
+  animation: bounce 0.6s ease;
+}
+@keyframes bounce {
+  0% {
+    transform: translateY(-6px) scale(0.98);
+    opacity: 0.8;
+  }
+  60% {
+    transform: translateY(2px) scale(1.04);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ========= Utilities (Tailwind-ish you used) ========= */
+.max-w-2xl {
+  max-width: 42rem;
+} /* ~672px */
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+.p-4 {
+  padding: 1rem;
+}
+.mb-3 {
+  margin-bottom: 0.75rem;
+}
+.mb-4 {
+  margin-bottom: 1rem;
+}
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+.font-semibold {
+  font-weight: 600;
+}
+.text-red-600 {
+  color: #dc2626;
+}
+
+/* --- Song Picker (stacked rectangular results) --- */
+.song-picker {
+  position: relative;
+}
+.song-results {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.song-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  text-align: left;
+}
+.song-item:hover {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand) 16%, transparent);
+}
+.song-item .cover {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex: none;
+  background: #0001;
+}
+.song-item .meta {
+  flex: 1;
+  min-width: 0;
+}
+.song-item .title {
+  font-weight: 600;
+  line-height: 1.2;
+}
+.song-item .artist {
+  color: var(--muted);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.song-item {
+  color: var(--text);
+}
+.song-item .title {
+  color: var(--text);
+}
+.song-item .artist {
+  color: var(--muted);
+}
+.song-item:hover .title {
+  color: var(--text);
+}
+
+/* --- Entry List cards --- */
+.entry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 8px 0;
+}
+.entry-card {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  color: inherit;
+}
+.entry-card:hover {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand) 16%, transparent);
+}
+.entry-card .emoji {
+  font-size: 24px;
+  line-height: 1;
+}
+.entry-card .body {
+  flex: 1;
+  min-width: 0;
+}
+.entry-card .date {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+.entry-card .mood {
+  font-weight: 600;
+}
+.entry-card .songline {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}

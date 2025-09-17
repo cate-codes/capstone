@@ -1,0 +1,3 @@
+BEGIN;
+ALTER TABLE moods ADD CONSTRAINT IF NOT EXISTS moods_name_key UNIQUE (name);
+COMMIT;
